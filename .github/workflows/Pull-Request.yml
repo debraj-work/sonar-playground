@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Required to fetch all refs for sonar diff analysis
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
@@ -24,12 +26,21 @@ jobs:
         run: mvn clean verify -T 3
 
       - name: Display JaCoCo report (optional debug)
-        run: cat coverage/target/site/jacoco-aggregate/jacoco.xml
+        run: |
+          echo "First 20 lines of JaCoCo XML:"
+          head -n 20 coverage/target/site/jacoco-aggregate/jacoco.xml || echo "File not found"
+
+      - name: Fetch base branch for SonarCloud PR analysis
+        if: github.event_name == 'pull_request'
+        run: git fetch origin ${{ github.event.pull_request.base.ref }}
 
       - name: Analyze on SonarCloud
-        run: mvn sonar:sonar \
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
-          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-          -Dsonar.coverage.jacoco.xmlReportPaths=coverage/target/site/jacoco-aggregate/jacoco.xml
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn sonar:sonar \
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.coverage.jacoco.xmlReportPaths=coverage/target/site/jacoco-aggregate/jacoco.xml
