@@ -21,6 +21,11 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <junit.version>5.8.2</junit.version>
+        <!-- Exclude files from analysis entirely -->
+        <sonar.exclusions>**/generated/**,**/dto/**</sonar.exclusions>
+
+        <!-- Exclude files only from coverage metrics -->
+        <sonar.coverage.exclusions>**/config/**,**/legacy/**</sonar.coverage.exclusions>
     </properties>
 
     <dependencies>
