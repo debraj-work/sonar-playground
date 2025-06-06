@@ -17,6 +17,10 @@
     <name>Coverage</name>
     <description>Coverage module for aggregating JaCoCo reports</description>
 
+    <properties>
+        <sonar.skip>true</sonar.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.example</groupId>
