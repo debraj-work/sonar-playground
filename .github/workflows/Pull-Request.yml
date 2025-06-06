@@ -36,20 +36,20 @@ jobs:
         if: github.event_name == 'pull_request'
         run: git fetch origin ${{ github.event.pull_request.base.ref }}
 
-      - name: Build and run tests with JaCoCo aggregation
-        run: mvn clean verify -T 3
-
-      - name: Display JaCoCo report (optional debug)
-        run: |
-          echo "First 20 lines of JaCoCo XML:"
-          head -n 20 coverage/target/site/jacoco-aggregate/jacoco.xml || echo "File not found"
+#      - name: Build and run tests with JaCoCo aggregation
+#        run: mvn clean verify -T 3
+#
+#      - name: Display JaCoCo report (optional debug)
+#        run: |
+#          echo "First 20 lines of JaCoCo XML:"
+#          head -n 20 coverage/target/site/jacoco-aggregate/jacoco.xml || echo "File not found"
 
       - name: Analyze on SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            mvn sonar:sonar \
+            mvn clean verify -T 3 sonar:sonar \
               -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
               -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
               -Dsonar.host.url=https://sonarcloud.io \
@@ -59,7 +59,7 @@ jobs:
               -Dsonar.pullrequest.base=${{ github.base_ref }} \
               -Dsonar.coverage.jacoco.xmlReportPaths=coverage/target/site/jacoco-aggregate/jacoco.xml
           else
-            mvn sonar:sonar \
+            mvn clean verify -T 3 sonar:sonar \
               -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
               -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
               -Dsonar.host.url=https://sonarcloud.io \
