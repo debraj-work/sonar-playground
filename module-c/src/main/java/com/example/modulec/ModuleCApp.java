@@ -21,7 +21,7 @@ public class ModuleCApp {
      * 
      * @param a first number
      * @param b second number
-     * @param operation the operation to perform (add, subtract, multiply, divide, power)
+     * @param operation the operation to perform (add, subtract, multiply, divide, power, modulo)
      * @return the formatted result
      */
     public String performOperation(int a, int b, String operation) {
@@ -41,13 +41,10 @@ public class ModuleCApp {
                 result = calculator.divide(a, b);
                 break;
             case "power":
-                if (b < 0) {
-                    throw new IllegalArgumentException("Exponent must be non-negative for power operation");
-                }
-                result = 1;
-                for (int i = 0; i < b; i++) {
-                    result = calculator.multiply(result, a);
-                }
+                result = calculator.power(a, b);
+                break;
+            case "modulo":
+                result = calculator.modulo(a, b);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown operation: " + operation);
@@ -82,6 +79,7 @@ public class ModuleCApp {
             case "multiply": return "*";
             case "divide": return "/";
             case "power": return "^";
+            case "modulo": return "%";
             default: return "?";
         }
     }
@@ -99,5 +97,6 @@ public class ModuleCApp {
         System.out.println(app.performOperation(10, 5, "multiply"));
         System.out.println(app.performOperation(10, 5, "divide"));
         System.out.println(app.performOperation(2, 3, "power"));
+        System.out.println(app.performOperation(10, 3, "modulo"));
     }
 }
