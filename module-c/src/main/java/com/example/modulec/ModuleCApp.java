@@ -7,26 +7,26 @@ import com.example.moduleb.StringUtils;
  * Main application class for Module C that uses functionality from both Module A and Module B.
  */
 public class ModuleCApp {
-    
+
     private final Calculator calculator;
     private final StringUtils stringUtils;
-    
+
     public ModuleCApp() {
         this.calculator = new Calculator();
         this.stringUtils = new StringUtils();
     }
-    
+
     /**
      * Performs a calculation and formats the result as a string.
      * 
      * @param a first number
      * @param b second number
-     * @param operation the operation to perform (add, subtract, multiply, divide)
+     * @param operation the operation to perform (add, subtract, multiply, divide, power, modulo)
      * @return the formatted result
      */
     public String performOperation(int a, int b, String operation) {
         int result;
-        
+
         switch (operation.toLowerCase()) {
             case "add":
                 result = calculator.add(a, b);
@@ -40,20 +40,32 @@ public class ModuleCApp {
             case "divide":
                 result = calculator.divide(a, b);
                 break;
+            case "power":
+                result = calculator.power(a, b);
+                break;
+            case "modulo":
+                result = calculator.modulo(a, b);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown operation: " + operation);
         }
-        
+
         String resultString = a + " " + getOperationSymbol(operation) + " " + b + " = " + result;
-        
+
         // Use StringUtils to check if the result is a palindrome
         if (stringUtils.isPalindrome(String.valueOf(result))) {
             resultString += " (palindrome)";
         }
-        
+
+        // For power operation, also show the reversed result string
+        if (operation.equalsIgnoreCase("power")) {
+            String reversedResult = stringUtils.reverse(resultString);
+            resultString += " (reversed: " + reversedResult + ")";
+        }
+
         return resultString;
     }
-    
+
     /**
      * Gets the symbol for the given operation.
      * 
@@ -66,10 +78,12 @@ public class ModuleCApp {
             case "subtract": return "-";
             case "multiply": return "*";
             case "divide": return "/";
+            case "power": return "^";
+            case "modulo": return "%";
             default: return "?";
         }
     }
-    
+
     /**
      * Main method to demonstrate the functionality.
      * 
@@ -77,10 +91,12 @@ public class ModuleCApp {
      */
     public static void main(String[] args) {
         ModuleCApp app = new ModuleCApp();
-        
+
         System.out.println(app.performOperation(10, 5, "add"));
         System.out.println(app.performOperation(10, 5, "subtract"));
         System.out.println(app.performOperation(10, 5, "multiply"));
         System.out.println(app.performOperation(10, 5, "divide"));
+        System.out.println(app.performOperation(2, 3, "power"));
+        System.out.println(app.performOperation(10, 3, "modulo"));
     }
 }
