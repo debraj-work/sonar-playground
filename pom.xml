@@ -26,7 +26,14 @@
 
         <!-- Exclude files only from coverage metrics -->
         <sonar.coverage.exclusions>**/config/**,**/legacy/**</sonar.coverage.exclusions>
+        <!-- Point the Sonar Qube Plugin always to the same aggregated JaCoCo report -->
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.basedir}/../coverage/target/site/jacoco-aggregate/jacoco.xml,
+            ${project.basedir}/coverage/target/site/jacoco-aggregate/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
+
+
 
     <dependencies>
         <dependency>
