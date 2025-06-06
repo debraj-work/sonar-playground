@@ -32,10 +32,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Fetch base branch for SonarCloud PR analysis
-        if: github.event_name == 'pull_request'
-        run: git fetch origin ${{ github.event.pull_request.base.ref }}
-
       - name: Build and run tests with JaCoCo aggregation
         run: mvn clean verify -T 3
 
@@ -43,6 +39,10 @@ jobs:
         run: |
           echo "First 20 lines of JaCoCo XML:"
           head -n 20 coverage/target/site/jacoco-aggregate/jacoco.xml || echo "File not found"
+
+      - name: Fetch base branch for SonarCloud PR analysis
+        if: github.event_name == 'pull_request'
+        run: git fetch origin ${{ github.event.pull_request.base.ref }}
 
       - name: Analyze on SonarCloud
         env:
